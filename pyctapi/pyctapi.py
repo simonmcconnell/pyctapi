@@ -12,6 +12,7 @@
 # - CtEng32.dll
 # - CtRes32.DLL
 # - CtUtil32.dll
+# - CtUtilManagedHelper.dll - new in v7.50 aka 2015
 
 __title__ = 'pyctapi'
 __version__ = '0.1'
@@ -79,9 +80,9 @@ CT_LIST_QUALITY_CONTROL_MODE = 0x0000000B
 PROPERTY_NAME_LEN = 256
 
 COMMON_WIN32_ERRORS = {
-    "21" : "ERROR_INVALID_ACCESS", # Tag doesnt exist??
-    "111" : "ERROR_BUFFER_OVERFLOW", # Result buffer not big enough",
-    "233" : "ERROR_PIPE_NOT_CONNECTED",
+    "21" : "ERROR_INVALID_ACCESS",  # Tag doesnt exist??
+    "111" : "ERROR_BUFFER_OVERFLOW",  # Result buffer not big enough",
+    "233" : "ERROR_PIPE_NOT_CONNECTED",  # Connection to client is not established or client has not logged in correctly.
 }
 
 CITECT_ERRORS = {
@@ -95,6 +96,9 @@ class CTAPIWrapper:
         CDLL(dll_path + '/CtUtil32')
         CDLL(dll_path + '/Ct_ipc')
         CDLL(dll_path + '/CtApi')
+        CDLL(dll_path + '/CtEng32')
+        CDLL(dll_path + '/CtRes32')
+        CDLL(dll_path + '/CtUtilManagedHelper')
 
     def ctOpen(self, host_address, username, password, mode=0):
         return windll.CtApi.ctOpen(host_address.encode("ascii"), username.encode("ascii"), password.encode("ascii"), mode)
@@ -121,7 +125,7 @@ class CTAPIWrapper:
         return windll.CtApi.ctListAdd(_list, tag_name.encode("ascii"))
 
     def ctListDelete(self, tag_handle):
-        windll.CtApi.ctListDelete(tag_handle)
+        return windll.CtApi.ctListDelete(tag_handle)
 
     def ctListRead(self, _list, overlapped=None):
         return windll.CtApi.ctListRead(_list, overlapped)
